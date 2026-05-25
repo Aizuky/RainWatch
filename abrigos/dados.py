@@ -1,0 +1,17 @@
+ABRIGOS = [
+    {"id": 1,  "nome": "Escola Municipal Aníbal Fernandes",     "endereco": "R. Padre Inglês, 259 — Boa Vista",         "tipo": "Escola",   "bairro": "Boa Vista",    "capacidade": 200},
+    {"id": 2,  "nome": "Ginásio Geraldão",                      "endereco": "R. da Soledade, s/n — Cordeiro",           "tipo": "Ginásio",  "bairro": "Cordeiro",     "capacidade": 800},
+    {"id": 3,  "nome": "Igreja Nossa Sra. do Carmo",            "endereco": "Av. Dantas Barreto, 711 — Santo Antônio",  "tipo": "Igreja",   "bairro": "Santo Antônio","capacidade": 150},
+    {"id": 4,  "nome": "Escola Estadual João Pessoa",           "endereco": "R. João Pessoa, 456 — Afogados",           "tipo": "Escola",   "bairro": "Afogados",     "capacidade": 300},
+    {"id": 5,  "nome": "Centro Comunitário do Ibura",           "endereco": "R. do Ibura, 123 — Ibura",                 "tipo": "Centro",   "bairro": "Ibura",        "capacidade": 120},
+    {"id": 6,  "nome": "Igreja Evangélica Assembléia de Deus",  "endereco": "R. da Mangueira, 78 — Mangueira",          "tipo": "Igreja",   "bairro": "Mangueira",    "capacidade": 180},
+    {"id": 7,  "nome": "Escola Municipal Poeta Carlos Pena",    "endereco": "R. Tejipió, 340 — Tejipió",                "tipo": "Escola",   "bairro": "Tejipió",      "capacidade": 250},
+    {"id": 8,  "nome": "Ginásio do Coque",                      "endereco": "R. do Coque, 89 — Coque",                  "tipo": "Ginásio",  "bairro": "Coque",        "capacidade": 400},
+    {"id": 9,  "nome": "Centro Social Urbano da Várzea",        "endereco": "Av. da Várzea, 567 — Várzea",              "tipo": "Centro",   "bairro": "Várzea",       "capacidade": 160},
+    {"id": 10, "nome": "Escola Municipal Amorim Lima",          "endereco": "R. Mustardinha, 234 — Mustardinha",        "tipo": "Escola",   "bairro": "Mustardinha",  "capacidade": 220},
+    {"id": 11, "nome": "Igreja Católica São João Batista",      "endereco": "R. do Mandu, 45 — Alto do Mandu",          "tipo": "Igreja",   "bairro": "Alto do Mandu","capacidade": 130},
+    {"id": 12, "nome": "Escola Estadual Governador Arraes",     "endereco": "R. San Martin, 678 — San Martin",          "tipo": "Escola",   "bairro": "San Martin",   "capacidade": 280},
+    {"id": 13, "nome": "Centro Comunitário Torre",              "endereco": "R. da Torre, 321 — Torre",                 "tipo": "Centro",   "bairro": "Torre",        "capacidade": 100},
+    {"id": 14, "nome": "Escola Municipal Bárbara de Alencar",   "endereco": "Av. Boa Viagem, 1200 — Boa Viagem",        "tipo": "Escola",   "bairro": "Boa Viagem",   "capacidade": 350},
+    {"id": 15, "nome": "Igreja Nossa Sra. da Conceição",        "endereco": "R. Casa Forte, 89 — Casa Forte",           "tipo": "Igreja",   "bairro": "Casa Forte",   "capacidade": 140},
+]
