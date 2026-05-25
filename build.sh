@@ -3,5 +3,11 @@
 # Instala as dependências
 pip install -r requirements.txt
 
-# Coleta os arquivos estáticos (obrigatório para o Django não quebrar o layout)
-python3.9 manage.py collectstatic --noinput
+# Cria a estrutura de tabelas do Django no banco
+python manage.py migrate
+
+# Roda o seu script para colocar os dados iniciais no banco
+python popular_banco.py
+
+# Coleta os arquivos estáticos
+python manage.py collectstatic --noinput
