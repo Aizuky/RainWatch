@@ -10,7 +10,7 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "nome_do_seu_projeto/wsgi.py"
+        "dest": "rainwatch/wsgi.py"
       }
     ]
   }
