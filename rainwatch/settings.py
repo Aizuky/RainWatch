@@ -124,3 +124,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     BASE_DIR / "sensores" / "static",
 ]
+# Adicione esta linha logo abaixo de STATICFILES_DIRS:
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
