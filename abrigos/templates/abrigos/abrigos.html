@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rainwatch — Abrigos</title>
+  <link rel="stylesheet" href="{% static 'abrigos/css/abrigos.css' %}"/>
+  <script type="text/javascript" src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/7fc7dc04d2d133a4_complete.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<nav class="topbar">
+  <div>
+    <div class="brand-name">Rainwatch</div>
+    <div class="brand-sub">Localizador de Abrigos</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/" class="nav-btn">← Dashboard</a>
+    <div class="live-pill">
+      <div class="live-dot"></div>
+      AO VIVO
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Localizador de Abrigos</div>
+      <div class="page-sub">Áreas seguras disponíveis em Recife para populações em risco</div>
+    </div>
+    <div class="total-badge">{{ total }} abrigo{% if total != 1 %}s{% endif %} encontrado{% if total != 1 %}s{% endif %}</div>
+  </div>
+
+  <!-- FILTRO -->
+  <div class="filtro-bar">
+    <span class="filtro-label">Filtrar por bairro:</span>
+    <div class="filtro-btns">
+      <a href="/abrigos/" class="filtro-btn {% if not bairro_selecionado %}ativo{% endif %}">Todos</a>
+      {% for bairro in bairros %}
+        <a href="/abrigos/?bairro={{ bairro }}" class="filtro-btn {% if bairro == bairro_selecionado %}ativo{% endif %}">{{ bairro }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <form method="get" style="margin-bottom:1.5rem;display:flex;gap:10px;align-items:center">
+  {% if bairro_selecionado %}
+    <input type="hidden" name="bairro" value="{{ bairro_selecionado }}"/>
+  {% endif %}
+  <input
+    type="text"
+    name="busca"
+    value="{{ busca }}"
+    placeholder="Buscar abrigo por nome..."
+    style="
+      flex:1; padding:9px 14px; border-radius:8px;
+      background:var(--surface2); border:1px solid var(--border);
+      color:var(--text); font-family:var(--mono); font-size:13px;
+    "
+  />
+  <button type="submit" style="
+    padding:9px 18px; border-radius:8px; border:none;
+    background:var(--accent); color:#070d14;
+    font-family:var(--font); font-size:12px; font-weight:700;
+    cursor:pointer;
+  ">Buscar</button>
+  {% if busca %}
+    <a href="/abrigos/?bairro={{ bairro_selecionado }}" style="
+      padding:9px 14px; border-radius:8px;
+      border:1px solid var(--border); color:var(--text2);
+      font-size:12px; text-decoration:none;
+    ">✕ Limpar</a>
+  {% endif %}
+</form>
+
+  <!-- LISTA DE ABRIGOS -->
+  <div class="abrigos-grid">
+    {% for abrigo in abrigos %}
+    <div class="abrigo-card">
+      <div class="abrigo-top">
+        {% if abrigo.risco == "critico" %}
+  <div style="
+    display:flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:6px;margin-bottom:8px;
+    background:rgba(255,61,61,0.08);border:1px solid rgba(255,61,61,0.25);
+    font-size:11px;color:#ff3d3d;font-family:var(--mono);
+  ">⚠ Bairro em zona crítica de risco</div>
+{% elif abrigo.risco == "alerta" %}
+  <div style="
+    display:flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:6px;margin-bottom:8px;
+    background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.25);
+    font-size:11px;color:#ffaa00;font-family:var(--mono);
+  ">~ Bairro em nível de alerta</div>
+{% else %}
+  <div style="
+    display:flex;align-items:center;gap:6px;
+    padding:5px 10px;border-radius:6px;margin-bottom:8px;
+    background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);
+    font-size:11px;color:#00e676;font-family:var(--mono);
+  ">✓ Área segura</div>
+{% endif %}
+        <div class="abrigo-tipo-badge tipo-{{ abrigo.tipo|lower }}">
+          {% if abrigo.tipo == "Escola" %}🏫
+          {% elif abrigo.tipo == "Ginásio" %}🏟
+          {% elif abrigo.tipo == "Igreja" %}⛪
+          {% else %}🏢
+          {% endif %}
+          {{ abrigo.tipo }}
+        </div>
+        <div class="abrigo-capacidade">👥 {{ abrigo.capacidade }} pessoas</div>
+      </div>
+      <div class="abrigo-nome">{{ abrigo.nome }}</div>
+      <div class="abrigo-endereco">📍 {{ abrigo.endereco }}</div>
+      <div class="abrigo-bairro">{{ abrigo.bairro }}</div>
+    </div>
+    {% empty %}
+    <div class="vazio">Nenhum abrigo encontrado para este bairro.</div>
+    {% endfor %}
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-left">Rainwatch v1.0 · Dados simulados · Recife/PE</div>
+  </div>
+
+</main>
+
+<script>
+  function atualizarRelogio() {
+    const agora = new Date();
+    const el = document.getElementById("relogio");
+    if(el) el.textContent = agora.toLocaleTimeString("pt-BR");
+  }
+  atualizarRelogio();
+  setInterval(atualizarRelogio, 1000);
+</script>
+
+</body>
+</html>

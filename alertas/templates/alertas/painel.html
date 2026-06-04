@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alertas — RainWatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <script type="text/javascript" src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/7fc7dc04d2d133a4_complete.js" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0c10;
+      --surface:   #111318;
+      --surface2:  #181b22;
+      --border:    #252830;
+      --text:      #e8eaf0;
+      --muted:     #666c7a;
+      --critico:   #ff3b3b;
+      --alerta:    #ffaa00;
+      --normal:    #00d68f;
+      --enviado:   #00d68f;
+      --falha:     #ff3b3b;
+      --pendente:  #ffaa00;
+      --ignorado:  #444;
+      --accent:    #4f8fff;
+      --radius:    8px;
+      --mono:      'Space Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+    .shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 50%; display: grid; place-items: center; font-size: 18px; }
+    .logo-name { font-size: 16px; font-weight: 800; letter-spacing: .5px; }
+    .logo-sub  { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: var(--radius);
+      color: var(--muted); text-decoration: none;
+      font-size: 13px; font-weight: 600; transition: all .2s;
+    }
+    .nav a:hover, .nav a.ativo { background: var(--surface2); color: var(--text); }
+    .nav a.ativo { border-left: 3px solid var(--accent); padding-left: 11px; }
+
+    .main { padding: 40px; display: flex; flex-direction: column; gap: 32px; }
+
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .page-title { font-size: 28px; font-weight: 800; }
+    .page-sub   { font-size: 13px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius);
+      font-family: var(--sans); font-size: 13px; font-weight: 700;
+      cursor: pointer; border: none; text-decoration: none; transition: all .2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-danger  { background: var(--critico); color: #fff; }
+    .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm { padding: 6px 12px; font-size: 11px; }
+
+    .messages { display: flex; flex-direction: column; gap: 8px; }
+    .msg { padding: 12px 18px; border-radius: var(--radius); font-size: 13px; border-left: 4px solid; }
+    .msg-success { background: #00d68f18; border-color: var(--normal); color: #00d68f; }
+    .msg-error   { background: #ff3b3b18; border-color: var(--critico); color: #ff6b6b; }
+    .msg-info    { background: #4f8fff18; border-color: var(--accent); color: #82aaff; }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .metric-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      position: relative; overflow: hidden;
+    }
+    .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .metric-card.total::before    { background: var(--accent); }
+    .metric-card.enviado::before  { background: var(--enviado); }
+    .metric-card.falha::before    { background: var(--falha); }
+    .metric-card.pendente::before { background: var(--pendente); }
+    .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono); }
+    .metric-value { font-size: 40px; font-weight: 800; margin-top: 8px; line-height: 1; }
+    .metric-card.total   .metric-value { color: var(--accent); }
+    .metric-card.enviado .metric-value { color: var(--enviado); }
+    .metric-card.falha   .metric-value { color: var(--falha); }
+    .metric-card.pendente .metric-value { color: var(--pendente); }
+
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .section-title { font-size: 14px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); }
+
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--surface2); }
+    th { padding: 12px 16px; text-align: left; font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); }
+    td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface2); }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: .5px; }
+    .badge-critico  { background: #ff3b3b22; color: var(--critico);  border: 1px solid #ff3b3b44; }
+    .badge-alerta   { background: #ffaa0022; color: var(--alerta);   border: 1px solid #ffaa0044; }
+    .badge-normal   { background: #00d68f22; color: var(--normal);   border: 1px solid #00d68f44; }
+    .badge-enviado  { background: #00d68f18; color: var(--enviado);  border: 1px solid #00d68f33; }
+    .badge-falha    { background: #ff3b3b18; color: var(--falha);    border: 1px solid #ff3b3b33; }
+    .badge-pendente { background: #ffaa0018; color: var(--pendente); border: 1px solid #ffaa0033; }
+    .badge-ignorado { background: #44444422; color: var(--ignorado); border: 1px solid #44444444; }
+    .badge-email    { background: #4f8fff18; color: var(--accent);   border: 1px solid #4f8fff33; }
+    .badge-sms      { background: #aa4fff18; color: #cc88ff;         border: 1px solid #aa4fff33; }
+    .badge-webhook  { background: #ff8c0018; color: #ffaa55;         border: 1px solid #ff8c0033; }
+
+    .actions { display: flex; gap: 6px; }
+
+    .configs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .config-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      display: flex; flex-direction: column; gap: 12px; transition: border-color .2s;
+    }
+    .config-card:hover { border-color: var(--accent); }
+    .config-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .config-nome { font-weight: 700; font-size: 15px; }
+    .config-dest { font-size: 12px; color: var(--muted); font-family: var(--mono); word-break: break-all; }
+    .config-flags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .flag { font-size: 10px; font-family: var(--mono); padding: 2px 8px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+    .flag.on { color: var(--normal); border-color: #00d68f44; background: #00d68f11; }
+    .config-actions { display: flex; gap: 8px; margin-top: auto; }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .dot-on  { background: var(--normal); box-shadow: 0 0 6px var(--normal); }
+    .dot-off { background: var(--muted); }
+
+    .empty { text-align: center; padding: 60px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
+
+    @keyframes pulse-critico {
+      0%, 100% { box-shadow: 0 0 0 0 #ff3b3b33; }
+      50%       { box-shadow: 0 0 0 8px #ff3b3b00; }
+    }
+    .metric-card.falha { animation: pulse-critico 2.5s infinite; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🌧</div>
+      <div>
+        <div class="logo-name">RainWatch</div>
+        <div class="logo-sub">RECIFE / PE</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="{% url 'dashboard' %}">📡 &nbsp;Sensores</a>
+      <a href="{% url 'alertas:painel' %}" class="ativo">🔔 &nbsp;Alertas</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Central de Alertas</h1>
+        <p class="page-sub">Monitoramento e disparo automático · Recife, PE</p>
+      </div>
+      <form method="post" action="{% url 'alertas:disparar' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">⚡ Disparar Alertas Agora</button>
+      </form>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+      {% for msg in messages %}
+      <div class="msg msg-{{ msg.tags }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="metrics">
+      <div class="metric-card total">
+        <div class="metric-label">Total Gerados</div>
+        <div class="metric-value">{{ total }}</div>
+      </div>
+      <div class="metric-card enviado">
+        <div class="metric-label">Enviados</div>
+        <div class="metric-value">{{ enviados }}</div>
+      </div>
+      <div class="metric-card falha">
+        <div class="metric-label">Falhas</div>
+        <div class="metric-value">{{ falhas }}</div>
+      </div>
+      <div class="metric-card pendente">
+        <div class="metric-label">Pendentes</div>
+        <div class="metric-value">{{ pendentes }}</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <span class="section-title">Destinatários Configurados</span>
+        <a href="{% url 'alertas:config_criar' %}" class="btn btn-ghost btn-sm">+ Adicionar</a>
+      </div>
+      {% if configs %}
+      <div class="configs-grid">
+        {% for cfg in configs %}
+        <div class="config-card">
+          <div class="config-card-header">
+            <div>
+              <span class="status-dot {% if cfg.ativo %}dot-on{% else %}dot-off{% endif %}"></span>
+              <span class="config-nome">{{ cfg.nome }}</span>
+            </div>
+            <span class="badge badge-{{ cfg.canal }}">{{ cfg.canal }}</span>
+          </div>
+          <div class="config-dest">{{ cfg.destinatario }}</div>
+          <div class="config-flags">
+            <span class="flag {% if cfg.notificar_alerta %}on{% endif %}">⚠ alerta</span>
+            <span class="flag {% if cfg.notificar_critico %}on{% endif %}">🔴 crítico</span>
+            <span class="flag {% if cfg.ativo %}on{% endif %}">{% if cfg.ativo %}ativo{% else %}inativo{% endif %}</span>
+          </div>
+          <div class="config-actions">
+            <a href="{% url 'alertas:config_editar' cfg.pk %}" class="btn btn-ghost btn-sm">Editar</a>
+            <form method="post" action="{% url 'alertas:config_excluir' cfg.pk %}" onsubmit="return confirm('Remover esta configuração?')">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty">Nenhum destinatário configurado ainda.</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="section-header">
+        <span class="section-title">Histórico de Alertas</span>
+      </div>
+      {% if alertas %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Bairro</th>
+              <th>Nível</th>
+              <th>Canal</th>
+              <th>Destinatário</th>
+              <th>Chuva</th>
+              <th>Saturação</th>
+              <th>Status</th>
+              <th>Gerado em</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in alertas %}
+            <tr id="row-{{ a.pk }}">
+              <td><strong>{{ a.bairro }}</strong><br><small style="color:var(--muted)">{{ a.zona }}</small></td>
+              <td><span class="badge badge-{{ a.nivel }}">{{ a.nivel }}</span></td>
+              <td><span class="badge badge-{{ a.canal }}">{{ a.canal }}</span></td>
+              <td style="font-family:var(--mono);font-size:12px">{{ a.destinatario }}</td>
+              <td style="font-family:var(--mono)">{{ a.chuva_mm }} mm</td>
+              <td style="font-family:var(--mono)">{{ a.saturacao }}%</td>
+              <td>
+                <span class="badge badge-{{ a.status }}" id="badge-{{ a.pk }}">{{ a.status }}</span>
+                {% if a.erro_detalhe %}
+                <div style="font-size:10px;color:var(--falha);margin-top:4px;font-family:var(--mono)">{{ a.erro_detalhe }}</div>
+                {% endif %}
+              </td>
+              <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">{{ a.criado_em|date:"d/m H:i" }}</td>
+              <td>
+                <div class="actions">
+                  {% if a.status == "falha" %}
+                  <button class="btn btn-ghost btn-sm" onclick="reenviar({{ a.pk }})">↻</button>
+                  {% endif %}
+                  {% if a.status != "ignorado" %}
+                  <button class="btn btn-ghost btn-sm" onclick="ignorar({{ a.pk }})">✕</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty">Nenhum alerta gerado ainda.<br>Clique em "Disparar Alertas Agora" para processar os sensores.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<script>
+  const CSRF = "{{ csrf_token }}";
+
+  async function ignorar(pk) {
+    const r = await fetch(`/alertas/alerta/${pk}/ignorar/`, { method: "POST", headers: { "X-CSRFToken": CSRF } });
+    if (r.ok) {
+      const badge = document.getElementById(`badge-${pk}`);
+      badge.className = "badge badge-ignorado";
+      badge.textContent = "ignorado";
+    }
+  }
+
+  async function reenviar(pk) {
+    const r = await fetch(`/alertas/alerta/${pk}/reenviar/`, { method: "POST", headers: { "X-CSRFToken": CSRF } });
+    if (r.ok) {
+      const data = await r.json();
+      const badge = document.getElementById(`badge-${pk}`);
+      badge.className = `badge badge-${data.status}`;
+      badge.textContent = data.status;
+    }
+  }
+</script>
+</body>
+</html>

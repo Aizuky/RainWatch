@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Meu Perfil</title>
+  <link rel="stylesheet" href="{% static 'sensores/css/dashboard.css' %}"/>
+</head>
+<body>
+  <h2>Meu Perfil</h2>
+  <p><strong>Nome:</strong> {{ usuario.first_name }}</p>
+  <p><strong>Email:</strong> {{ usuario.email }}</p>
+
+  <a href="{% url 'usuarios:logout' %}" class="nav-btn">🚪 Sair</a>
+  <a href="{% url 'dashboard' %}" class="nav-btn">⬅ Voltar ao Dashboard</a>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ acao }} Configuração — RainWatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <script type="text/javascript" src="https://js-cdn.dynatrace.com/jstag/176fb25782e/bf84867vgb/7fc7dc04d2d133a4_complete.js" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0c10; --surface: #111318; --surface2: #181b22;
+      --border: #252830; --text: #e8eaf0; --muted: #666c7a;
+      --accent: #4f8fff; --critico: #ff3b3b; --radius: 8px;
+      --mono: 'Space Mono', monospace; --sans: 'Syne', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: grid; place-items: center; padding: 40px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; width: 100%; max-width: 520px; }
+    .card-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .card-sub   { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-bottom: 32px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+    label  { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+
+    input[type="text"], select {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      padding: 10px 14px; font-family: var(--mono); font-size: 13px;
+      width: 100%; transition: border-color .2s;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--accent); }
+
+    .checkboxes { display: flex; flex-direction: column; gap: 10px; }
+    .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+    .checkbox-row span { font-size: 13px; }
+
+    .footer { display: flex; gap: 12px; margin-top: 32px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: var(--radius);
+      font-family: var(--sans); font-size: 13px; font-weight: 700;
+      cursor: pointer; border: none; text-decoration: none; transition: all .2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .messages { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .msg { padding: 10px 14px; border-radius: var(--radius); font-size: 13px; border-left: 4px solid; }
+    .msg-error { background: #ff3b3b18; border-color: #ff3b3b; color: #ff6b6b; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-title">{{ acao }} Configuração</div>
+  <div class="card-sub">RAINWATCH · SISTEMA DE ALERTAS</div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for msg in messages %}
+    <div class="msg msg-{{ msg.tags }}">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="field">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" name="nome" placeholder="Ex: Defesa Civil Recife" value="{{ cfg.nome|default:'' }}" required />
+    </div>
+
+    <div class="field">
+      <label for="canal">Canal</label>
+      <select id="canal" name="canal">
+        <option value="email"   {% if cfg.canal == 'email'   %}selected{% endif %}>📧 E-mail</option>
+        <option value="sms"     {% if cfg.canal == 'sms'     %}selected{% endif %}>📱 SMS</option>
+        <option value="webhook" {% if cfg.canal == 'webhook' %}selected{% endif %}>🔗 Webhook</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="destinatario">Destinatário</label>
+      <input type="text" id="destinatario" name="destinatario"
+             placeholder="email@exemplo.com, +55 81 9xxxx-xxxx ou https://..."
+             value="{{ cfg.destinatario|default:'' }}" required />
+    </div>
+
+    <div class="field">
+      <label>Notificar quando</label>
+      <div class="checkboxes">
+        <label class="checkbox-row">
+          <input type="checkbox" name="notificar_alerta" {% if cfg.notificar_alerta or not cfg %}checked{% endif %} />
+          <span>⚠️ Nível <strong>Alerta</strong></span>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" name="notificar_critico" {% if cfg.notificar_critico or not cfg %}checked{% endif %} />
+          <span>🔴 Nível <strong>Crítico</strong></span>
+        </label>
+        {% if cfg %}
+        <label class="checkbox-row">
+          <input type="checkbox" name="ativo" {% if cfg.ativo %}checked{% endif %} />
+          <span>✅ Configuração <strong>ativa</strong></span>
+        </label>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="footer">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="{% url 'alertas:painel' %}" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

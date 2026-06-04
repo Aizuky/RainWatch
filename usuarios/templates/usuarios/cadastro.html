@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Cadastro — Rainwatch</title>
+  <link rel="stylesheet" href="{% static 'usuarios/css/cadastro.css' %}"/>
+</head>
+<body>
+<div class="card">
+  <h1 class="card-title">Cadastro</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" name="nome" required>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <div style="position:relative">
+        <input type="password" id="senha" name="senha" required>
+        <button type="button" onclick="toggleSenha('senha')" 
+                style="position:absolute;right:8px;top:50%;transform:translateY(-50%);
+                       background:none;border:none;cursor:pointer;color:white">
+          👁
+        </button>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Finalizar Cadastro</button>
+  </form>
+
+  <div class="links">
+    <a href="{% url 'usuarios:login' %}">← Voltar para Login</a>
+  </div>
+
+  {% if messages %}
+    <div class="messages">
+      {% for msg in messages %}
+        <div class="msg msg-{{ msg.tags }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+function toggleSenha(idCampo) {
+  const campo = document.getElementById(idCampo);
+  campo.type = campo.type === "password" ? "text" : "password";
+}
+</script>
+</body>
+</html>
