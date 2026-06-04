@@ -56,13 +56,13 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  height: 56px;
+  height: 80px;
   background: rgba(7,13,20,0.92);
   border-bottom: 1px solid var(--border);
 }
 
 .brand-name {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text);
 }
@@ -83,7 +83,7 @@ body::before {
   border: 1px solid rgba(0,230,118,0.3);
   background: rgba(0,230,118,0.06);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 15px;
   color: var(--safe);
 }
 
@@ -142,7 +142,7 @@ body::before {
 .metric-tile.safe::before   { background: var(--safe); }
 
 .metric-label {
-  font-size: 10px;
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text3);
@@ -157,13 +157,13 @@ body::before {
 }
 
 .metric-val span {
-  font-size: 14px;
+  font-size: 20px;
   color: var(--text2);
   margin-left: 2px;
 }
 
 .metric-sub {
-  font-size: 11px;
+  font-size: 20px;
   color: var(--text3);
   margin-top: 8px;
 }
@@ -174,7 +174,7 @@ body::before {
 
 .metric-progress {
   margin-top: 12px;
-  height: 3px;
+  height: 4px;
   background: rgba(255,255,255,0.06);
   border-radius: 2px;
   overflow: hidden;
@@ -215,7 +215,7 @@ body::before {
 }
 
 .panel-title {
-  font-size: 11px;
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text2);
@@ -223,7 +223,7 @@ body::before {
 }
 
 .panel-badge {
-  font-size: 10px;
+  font-size: 15px;
   padding: 3px 9px;
   border-radius: 20px;
   font-family: var(--mono);
@@ -252,7 +252,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 10px;
+  padding: 12px 13px;
   border-radius: 8px;
   margin-bottom: 5px;
   border: 1px solid transparent;
@@ -273,18 +273,18 @@ body::before {
 
 .sensor-name-col {
   flex: 1;
-  font-size: 13px;
+  font-size: 20px;
   font-weight: 600;
 }
 
 .sensor-zona {
-  font-size: 10px;
+  font-size: 15px;
   color: var(--text3);
   margin-top: 1px;
 }
 
 .sensor-bar-wrap {
-  width: 60px;
+  width: 70px;
   height: 4px;
   background: rgba(255,255,255,0.05);
   border-radius: 2px;
@@ -298,14 +298,14 @@ body::before {
 
 .sensor-reading {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 15px;
   color: var(--text2);
-  width: 48px;
+  width: 58px;
   text-align: right;
 }
 
 .sensor-badge {
-  font-size: 9px;
+  font-size: 15px;
   padding: 2px 7px;
   border-radius: 10px;
   font-family: var(--mono);
@@ -324,12 +324,12 @@ body::before {
 }
 
 .footer-left {
-  font-size: 11px;
+  font-size: 15px;
   color: var(--text3);
   font-family: var(--mono);
 }
 .nav-btn {
-  font-size: 12px; font-weight: 600; color: var(--text2);
+  font-size: 20px; font-weight: 600; color: var(--text2);
   text-decoration: none; padding: 5px 14px;
   border: 1px solid var(--border); border-radius: 8px;
   transition: all 0.18s;
@@ -353,9 +353,9 @@ body::before {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 4px;
 }
-.alerta-bairro { font-size: 12px; font-weight: 700; color: var(--text); }
+.alerta-bairro { font-size: 20px; font-weight: 700; color: var(--text); }
 .alerta-hora { font-family: var(--mono); font-size: 10px; color: var(--text3); }
-.alerta-msg { font-size: 11px; color: var(--text2); line-height: 1.4; margin-bottom: 8px; }
+.alerta-msg { font-size: 15px; color: var(--text2); line-height: 1.4; margin-bottom: 8px; }
 .alerta-nivel-bar {
   height: 3px; background: rgba(255,255,255,0.05);
   border-radius: 2px; overflow: hidden;
@@ -363,3 +363,92 @@ body::before {
 .alerta-nivel-fill { height: 100%; border-radius: 2px; }
 .nivel-critico { background: var(--danger); width: 100%; }
 .nivel-alerta  { background: var(--warn);   width: 65%; }
+
+@media (max-width: 1024px) {
+  .hero-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .topbar {
+    padding: 0 1rem;
+    height: auto;
+    min-height: 56px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 1rem;
+  }
+  
+  .main {
+    margin-top: 80px;
+    padding: 1rem 0.75rem;
+  }
+
+  .hero-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .metric-tile {
+    padding: 1rem;
+  }
+
+  .metric-val {
+    font-size: 32px;
+  }
+
+  .sensor-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .sensor-name-col {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sensor-bar-wrap {
+    display: none;
+  }
+
+  .sensor-reading {
+    font-size: 13px;
+    width: auto;
+  }
+
+  .sensor-badge {
+    font-size: 10px;
+    min-width: 55px;
+    padding: 2px 4px;
+  }
+
+  .alerta-card {
+    padding: 10px;
+  }
+
+  .alerta-bairro {
+    font-size: 13px;
+  }
+
+  .alerta-msg {
+    font-size: 12px;
+  }
+
+  .page-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 1rem 8px;
+  }
+}
