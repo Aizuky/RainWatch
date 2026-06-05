@@ -3,15 +3,16 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .models import Alerta, ConfiguracaoAlerta
 from .servico import processar_sensores
 from sensores.dados import SENSORES
 
 
-# ──────────────────────────────────────────────
-# Painel principal de alertas
-# ──────────────────────────────────────────────
+# Tela de alertas
+
+@login_required
 def painel(request):
     alertas = Alerta.objects.all()[:100]
     configs = ConfiguracaoAlerta.objects.all()

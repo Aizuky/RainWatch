@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'sensores',
     'abrigos',
     'alertas',
+    'usuarios',
 ]
 
 MIDDLEWARE = [
@@ -121,9 +122,21 @@ STATIC_URL = '/static/'
 # Onde o Django vai reunir TODOS os estáticos do projeto para o Vercel servir
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Onde o Django deve procurar os arquivos estáticos de desenvolvimento
 STATICFILES_DIRS = [
-    BASE_DIR / "sensores" / "static",
+    BASE_DIR / "static",          # pasta global
+    BASE_DIR / "usuarios" / "static",  # pasta do app usuarios
+    BASE_DIR / "abrigos" / "static",   # se precisar
+    BASE_DIR / "alertas" / "static",   # se precisar
 ]
+
 # Adicione esta linha logo abaixo de STATICFILES_DIRS:
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Para onde o Django manda o usuário se não estiver logado
+LOGIN_URL = "usuarios:login"
+
+# Para onde o Django manda depois de logar com sucesso
+LOGIN_REDIRECT_URL = "sensores:dashboard"
+
+# Para onde o Django manda depois de logout
+LOGOUT_REDIRECT_URL = "usuarios:login"
