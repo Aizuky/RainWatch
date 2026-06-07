@@ -140,3 +140,5 @@ LOGIN_REDIRECT_URL = "sensores:dashboard"
 
 # Para onde o Django manda depois de logout
 LOGOUT_REDIRECT_URL = "usuarios:login"
+
+AUTH_USER_MODEL = "usuarios.Usuario"
