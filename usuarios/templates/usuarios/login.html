@@ -1,57 +1,31 @@
+{% extends "usuarios/base_auth.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8"/>
-  <title>Login — Rainwatch</title>
-  <link rel="stylesheet" href="{% static 'usuarios/css/login.css' %}"/>
-</head>
-<body>
-<div class="card">
-  <h1 class="card-title">Login</h1>
-  <form method="post">
-    {% csrf_token %}
-    <div class="field">
-      <label for="usuario">Usuário ou Email</label>
-      <input type="text" id="usuario" name="usuario" required>
-    </div>
-    <div class="field">
-      <label for="senha">Senha</label>
-      <div style="position:relative">
-        <input type="password" id="senha" name="senha" required>
-        <button type="button" onclick="toggleSenha('senha')" 
-                style="position:absolute;right:8px;top:50%;transform:translateY(-50%);
-                       background:none;border:none;cursor:pointer;color:white">
-          👁
-        </button>
-      </div>
-    </div>
-    <div class="checkbox-row">
-      <input type="checkbox" id="lembrar" name="lembrar">
-      <label for="lembrar">Lembrar de mim</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Confirmar Login</button>
-  </form>
 
-  <div class="links">
-    <a href="{% url 'usuarios:cadastro' %}">Criar conta</a> |
-    <a href="{% url 'usuarios:esqueci_senha' %}">Esqueci minha senha</a>
+{% block title %}Login{% endblock %}
+{% block header %}Login{% endblock %}
+
+{% block form_fields %}
+  <div class="form-group">
+    <input type="text" name="usuario" placeholder="Usuário ou Email" required/>
   </div>
+  <div class="form-group senha-group">
+    <input type="password" name="senha" placeholder="Senha" required id="senha_login"/>
+    <button type="button" onclick="toggleSenha('senha_login')" 
+            style="position:absolute;right:8px;top:50%;transform:translateY(-50%);
+                   background:none;border:none;cursor:pointer;color:black(--text2)">
+      👁
+    </button>
+  </div>
+  <div class="form-group">
+    <label>
+      <input type="checkbox" name="lembrar"/> Lembrar de mim
+    </label>
+  </div>
+{% endblock %}
 
-  {% if messages %}
-    <div class="messages">
-      {% for msg in messages %}
-        <div class="msg msg-{{ msg.tags }}">{{ msg }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-</div>
+{% block button_text %}Confirmar Login{% endblock %}
 
-<script>
-function toggleSenha(idCampo) {
-  const campo = document.getElementById(idCampo);
-  campo.type = campo.type === "password" ? "text" : "password";
-}
-</script>
-</body>
-</html>
+{% block links %}
+  <a href="{% url 'usuarios:cadastro' %}">Criar conta</a>
+  <a href="{% url 'usuarios:esqueci_senha' %}">Esqueci minha senha</a>
+{% endblock %}

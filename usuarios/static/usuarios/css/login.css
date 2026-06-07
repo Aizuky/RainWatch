@@ -134,3 +134,27 @@ body {
   border: 1px solid rgba(255,61,61,0.3);
   color: var(--text);
 }
+
+/* ===== Olhinho para mostrar/ocultar senha ===== */
+.senha-group {
+  position: relative;
+}
+
+.senha-group input {
+  width: 100%;
+  padding-right: 40px; /* espaço pro olhinho */
+}
+
+.toggle-senha {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text2);
+}
+
+.toggle-senha:hover {
+  color: var(--accent);
+}
