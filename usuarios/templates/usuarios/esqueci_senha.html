@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Esqueci Senha</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/esqueci_senha.css' %}">
+</head>
+
+<body>
+    <div class="rain-background" id="rainBackground"></div>
+
+    <div class="container">
+
+        <div class="logo">
+            <img src="{% static 'usuarios/img/rainwatch_logo.png' %}" alt="RainWatch Logo">
+        </div>
+
+        <h1>Recuperar Senha</h1>
+
+        {% if messages %} 
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %} 
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="usuario">Nome de usuário</label>
+            <input type="text" name="usuario" id="usuario" placeholder="Nome do usuario">
+
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="E-mail do usuario" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+        
+        <p><a href="{% url 'usuarios:login' %}">Voltar ao login</a></p>
+    </div>
+
+    <script src="{% static 'usuarios/js/chuva_fundo.js' %}"></script>
+</body>
+
+</html>

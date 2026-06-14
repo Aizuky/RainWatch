@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alertas — RainWatch</title>
+  <link rel="stylesheet" href="{% static 'alertas/css/painel.css' %}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🌧</div>
+      <div>
+        <div class="logo-name">RainWatch</div>
+        <div class="logo-sub">RECIFE / PE</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="{% url 'sensores:dashboard' %}">📡 &nbsp;Sensores</a>
+      <a href="{% url 'alertas:painel' %}" class="ativo">🔔 &nbsp;Alertas</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Central de Alertas</h1>
+        <p class="page-sub">Monitoramento e disparo automático · Recife, PE</p>
+      </div>
+      <form method="post" action="{% url 'alertas:disparar' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">⚡ Disparar Alertas Agora</button>
+      </form>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+      {% for msg in messages %}
+      <div class="msg msg-{{ msg.tags }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="metrics">
+      <div class="metric-card total">
+        <div class="metric-label">Total Gerados</div>
+        <div class="metric-value">{{ total }}</div>
+      </div>
+      <div class="metric-card enviado">
+        <div class="metric-label">Enviados</div>
+        <div class="metric-value">{{ enviados }}</div>
+      </div>
+      <div class="metric-card falha">
+        <div class="metric-label">Falhas</div>
+        <div class="metric-value">{{ falhas }}</div>
+      </div>
+      <div class="metric-card pendente">
+        <div class="metric-label">Pendentes</div>
+        <div class="metric-value">{{ pendentes }}</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-header">
+        <span class="section-title">Destinatários Configurados</span>
+        <a href="{% url 'alertas:config_criar' %}" class="btn btn-ghost btn-sm">+ Adicionar</a>
+      </div>
+      {% if configs %}
+      <div class="configs-grid">
+        {% for cfg in configs %}
+        <div class="config-card">
+          <div class="config-card-header">
+            <div>
+              <span class="status-dot {% if cfg.ativo %}dot-on{% else %}dot-off{% endif %}"></span>
+              <span class="config-nome">{{ cfg.nome }}</span>
+            </div>
+            <span class="badge badge-{{ cfg.canal }}">{{ cfg.canal }}</span>
+          </div>
+          <div class="config-dest">{{ cfg.destinatario }}</div>
+          <div class="config-flags">
+            <span class="flag {% if cfg.notificar_alerta %}on{% endif %}">⚠ alerta</span>
+            <span class="flag {% if cfg.notificar_critico %}on{% endif %}">🔴 crítico</span>
+            <span class="flag {% if cfg.ativo %}on{% endif %}">{% if cfg.ativo %}ativo{% else %}inativo{% endif %}</span>
+          </div>
+          <div class="config-actions">
+            <a href="{% url 'alertas:config_editar' cfg.pk %}" class="btn btn-ghost btn-sm">Editar</a>
+            <form method="post" action="{% url 'alertas:config_excluir' cfg.pk %}" onsubmit="return confirm('Remover esta configuração?')">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty">Nenhum destinatário configurado ainda.</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="section-header">
+        <span class="section-title">Histórico de Alertas</span>
+      </div>
+      {% if alertas %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Bairro</th>
+              <th>Nível</th>
+              <th>Canal</th>
+              <th>Destinatário</th>
+              <th>Chuva</th>
+              <th>Saturação</th>
+              <th>Status</th>
+              <th>Gerado em</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in alertas %}
+            <tr id="row-{{ a.pk }}">
+              <td><strong>{{ a.bairro }}</strong><br><small style="color:var(--muted)">{{ a.zona }}</small></td>
+              <td><span class="badge badge-{{ a.nivel }}">{{ a.nivel }}</span></td>
+              <td><span class="badge badge-{{ a.canal }}">{{ a.canal }}</span></td>
+              <td style="font-family:var(--mono);font-size:12px">{{ a.destinatario }}</td>
+              <td style="font-family:var(--mono)">{{ a.chuva_mm }} mm</td>
+              <td style="font-family:var(--mono)">{{ a.saturacao }}%</td>
+              <td>
+                <span class="badge badge-{{ a.status }}" id="badge-{{ a.pk }}">{{ a.status }}</span>
+                {% if a.erro_detalhe %}
+                <div style="font-size:10px;color:var(--falha);margin-top:4px;font-family:var(--mono)">{{ a.erro_detalhe }}</div>
+                {% endif %}
+              </td>
+              <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">{{ a.criado_em|date:"d/m H:i" }}</td>
+              <td>
+                <div class="actions">
+                  {% if a.status == "falha" %}
+                  <button class="btn btn-ghost btn-sm" onclick="reenviar({{ a.pk }})">↻</button>
+                  {% endif %}
+                  {% if a.status != "ignorado" %}
+                  <button class="btn btn-ghost btn-sm" onclick="ignorar({{ a.pk }})">✕</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty">Nenhum alerta gerado ainda.<br>Clique em "Disparar Alertas Agora" para processar os sensores.</div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<script>
+  const CSRF = "{{ csrf_token }}";
+
+  async function ignorar(pk) {
+    const r = await fetch(`/alertas/alerta/${pk}/ignorar/`, { method: "POST", headers: { "X-CSRFToken": CSRF } });
+    if (r.ok) {
+      const badge = document.getElementById(`badge-${pk}`);
+      badge.className = "badge badge-ignorado";
+      badge.textContent = "ignorado";
+    }
+  }
+
+  async function reenviar(pk) {
+    const r = await fetch(`/alertas/alerta/${pk}/reenviar/`, { method: "POST", headers: { "X-CSRFToken": CSRF } });
+    if (r.ok) {
+      const data = await r.json();
+      const badge = document.getElementById(`badge-${pk}`);
+      badge.className = `badge badge-${data.status}`;
+      badge.textContent = data.status;
+    }
+  }
+</script>
+</body>
+</html>

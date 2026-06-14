@@ -1,0 +1,168 @@
+/* Configuração global para impedir que inputs e divs passem do limite do card */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    /* Um degradê de azul escuro para dar sensação de profundidade à chuva */
+    background: linear-gradient(135deg, #061530 0%, #0a1f44 50%, #0d2a5c 100%); 
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden; /* CRÍTICO: Impede que as gotas gerem barras de rolagem na tela */
+}
+
+/* ==========================================================================
+   SISTEMA DA CHUVA DE FUNDO (ATIVADA PELO JAVASCRIPT)
+   ========================================================================== */
+.rain-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Fica atrás do card .container */
+    pointer-events: none; /* Garante que as gotas não bloqueiem os cliques e digitação */
+}
+
+.background-drop {
+    position: absolute;
+    top: -50px; /* Começa a queda um pouco acima da linha da tela */
+    width: 1px;
+    height: 45px; /* Rastro esticado da gota d'água */
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.35));
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(calc(100vh + 100px)); } /* Cai até sumir da tela */
+}
+
+/* ==========================================================================
+   CARD PRINCIPAL (GLASSMORPHISM)
+   ========================================================================== */
+.container {
+    width: 100%;
+    max-width: 380px; /* Largura ideal unificada para PC e Mobile */
+    padding: 40px 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px); /* Aumentado para o vidro desfocar as gotas de fundo perfeitamente */
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2; /* CRÍTICO: Deixa o card na frente da chuva de fundo */
+}
+
+/* --- FORMULÁRIO E TEXTOS --- */
+form {
+    width: 100%;
+}
+
+.logo img {
+    width: 140px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 26px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    text-align: left;
+    width: 100%;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.95); /* Aumentado um pouco o contraste para melhor leitura */
+    color: #0f172a;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+p {
+    margin-top: 15px;
+}
+
+a {
+    color: #00aaff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.alert.success { background: rgba(40, 167, 69, 0.8); }
+.alert.error { background: rgba(220, 53, 69, 0.8); }
+
+/* --- RESPONSIVIDADE (CELULARES) --- */
+@media (max-width: 650px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        padding: 30px 20px;
+    }
+    .logo img {
+        width: 120px;
+        margin-bottom: 15px;
+    }
+    h1 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+}

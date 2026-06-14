@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - RainWatch</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/login.css' %}">
+</head>
+
+<body>
+    <div class="rain-background" id="rainBackground"></div>
+
+    <div class="container">
+
+        <div class="logo">
+            <img src="{% static 'usuarios/img/rainwatch_logo.png' %}" alt="RainWatch Logo">
+        </div>
+
+        <h1>Login</h1>
+
+        {% if messages %} 
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %} 
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="usuario">Usuário ou Email</label>
+            <input type="text" name="usuario" id="usuario" placeholder="Nome de usuário ou e-mail" required>
+
+            <label for="senha">Senha</label>
+            <div class="password-field">
+                <input type="password" name="senha" id="senha" placeholder="Digite sua senha" required>
+                <span class="password-toggle" onclick="togglePassword('senha')"></span>
+            </div>
+
+            <div class="checkbox">
+                <input type="checkbox" name="lembrar" id="lembrar">
+                <label for="lembrar">Lembrar de mim</label>
+            </div>
+
+            <button type="submit">Continuar Login</button>
+        </form>
+
+        <p><a href="{% url 'usuarios:cadastro' %}">Criar conta</a></p>
+        <p><a href="{% url 'usuarios:esqueci_senha'%}"">Esqueci minha senha</a></p>
+    </div>
+
+    <script>
+        function togglePassword(id) {
+            const field = document.getElementById(id);
+            field.type = field.type === "password" ? "text" : "password";
+        }
+    </script>
+    <script src="{% static 'usuarios/js/chuva_fundo.js' %}"></script>
+</body>
+
+</html>

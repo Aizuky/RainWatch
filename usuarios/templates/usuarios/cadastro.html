@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="{% static 'usuarios/css/cadastro.css' %}">
+</head>
+
+<body>
+    <div class="rain-background" id="rainBackground"></div>
+
+    <div class="container">
+
+        <div class="logo">
+            <img src="{% static 'usuarios/img/rainwatch_logo.png' %}" alt="RainWatch Logo">
+        </div>
+
+        <h1>Cadastro</h1>
+
+        {% if messages %} 
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %} 
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="usuario">Nome de usuário</label>
+            <input type="text" name="usuario" id="usuario" placeholder="Nome completo" required>
+
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Informe um gmail" required>
+
+            <label for="senha">Senha</label>
+            <div class="password-field">
+                <input type="password" name="senha" id="senha" placeholder="Digite sua senha" required>
+                <span class="password-toggle" onclick="togglePassword('senha')"></span>
+            </div>
+
+            <label for="confirma_senha">Confirmar senha</label>
+            <div class="password-field">
+                <input type="password" name="confirma_senha" id="confirma_senha" placeholder="Confirma senha" required>
+                <span class="password-toggle" onclick="togglePassword('confirma_senha')"></span>
+            </div>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem conta? <a href="{% url 'usuarios:login' %}">Entrar</a></p>
+    </div>
+
+    <script>
+        function togglePassword(id) {
+            const field = document.getElementById(id);
+            field.type = field.type === "password" ? "text" : "password";
+        }
+    </script>
+    <script src="{% static 'usuarios/js/chuva_fundo.js' %}"></script>
+</body>
+
+</html>

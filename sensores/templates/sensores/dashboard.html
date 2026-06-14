@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rainwatch — Dashboard</title>
+  <link rel="stylesheet" href="{% static 'sensores/css/dashboard.css' %}"/>
+</head>
+<body>
+
+  </div>
+
+  <div style="display:flex; align-items:center; gap:12px; padding: 16px;">
+    <a href="/abrigos/" class="nav-btn">🏠 Abrigos</a>
+    <a href="{% url 'alertas:painel' %}" class="nav-btn">🔔 Alertas</a>
+    <a href="{% url 'usuarios:logout' %}" class="nav-btn">🚪 Sair</a>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; margin-left: auto;">
+      <div style="font-family:var(--mono); font-size:13px; color:var(--text2)" id="relogio">--:--:--</div>
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        AO VIVO
+      </div>
+    </div>
+  </div>
+
+  <main class="main">
+
+    <div class="hero-row">
+      <div class="metric-tile danger">
+        <div class="metric-label">Bairros críticos</div>
+        <div class="metric-val">{{ total_criticos }}<span>bairros</span></div>
+        <div class="metric-sub danger">▲ risco iminente</div>
+        <div class="metric-progress">
+          <div class="metric-progress-fill" style="width:{{ total_criticos }}0%"></div>
+        </div>
+      </div>
+      
+      <div class="metric-tile warn">
+        <div class="metric-label">Bairros em alerta</div>
+        <div class="metric-val">{{ total_alertas }}<span>bairros</span></div>
+        <div class="metric-sub warn">▲ monitoramento intenso</div>
+        <div class="metric-progress">
+          <div class="metric-progress-fill" style="width:{{ total_alertas }}0%"></div>
+        </div>
+      </div>
+      
+      <div class="metric-tile safe">
+        <div class="metric-label">Bairros normais</div>
+        <div class="metric-val">{{ total_normais }}<span>bairros</span></div>
+        <div class="metric-sub safe">▼ situação estável</div>
+        <div class="metric-progress">
+          <div class="metric-progress-fill" style="width:{{ total_normais }}0%"></div>
+        </div>
+      </div>
+      
+      <div class="metric-tile">
+        <div class="metric-label">Média de chuva</div>
+        <div class="metric-val">{{ media_chuva }}<span>mm</span></div>
+        <div class="metric-sub">acumulado 24h</div>
+        <div class="metric-progress">
+          <div class="metric-progress-fill" style="width:{{ media_chuva }}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Sensores por bairro</span>
+          <span class="panel-badge badge-danger">{{ total_criticos }} críticos</span>
+        </div>
+
+        {% for sensor in sensores %}
+          {% if sensor.status == "critico" %}
+            {% with cor="#ff3d3d" badge="badge-danger" label="Crítico" %}
+            <div class="sensor-item">
+              <div class="sensor-orb" style="background:{{ cor }}"></div>
+              <div>
+                <div class="sensor-name-col">{{ sensor.bairro }}</div>
+                <div class="sensor-zona">{{ sensor.zona }}</div>
+              </div>
+              <div class="sensor-bar-wrap">
+                <div class="sensor-bar-fill" style="width:{{ sensor.chuva_mm }}%; background:{{ cor }}"></div>
+              </div>
+              <div class="sensor-reading">{{ sensor.chuva_mm }}mm</div>
+              <div class="sensor-badge {{ badge }}">{{ label }}</div>
+            </div>
+            {% endwith %}
+          {% elif sensor.status == "alerta" %}
+            {% with cor="#ffaa00" badge="badge-warn" label="Alerta" %}
+            <div class="sensor-item">
+              <div class="sensor-orb" style="background:{{ cor }}"></div>
+              <div>
+                <div class="sensor-name-col">{{ sensor.bairro }}</div>
+                <div class="sensor-zona">{{ sensor.zona }}</div>
+              </div>
+              <div class="sensor-bar-wrap">
+                <div class="sensor-bar-fill" style="width:{{ sensor.chuva_mm }}%; background:{{ cor }}"></div>
+              </div>
+              <div class="sensor-reading">{{ sensor.chuva_mm }}mm</div>
+              <div class="sensor-badge {{ badge }}">{{ label }}</div>
+            </div>
+            {% endwith %}
+          {% else %}
+            {% with cor="#00e676" badge="badge-safe" label="Normal" %}
+            <div class="sensor-item">
+              <div class="sensor-orb" style="background:{{ cor }}"></div>
+              <div>
+                <div class="sensor-name-col">{{ sensor.bairro }}</div>
+                <div class="sensor-zona">{{ sensor.zona }}</div>
+              </div>
+              <div class="sensor-bar-wrap">
+                <div class="sensor-bar-fill" style="width:{{ sensor.chuva_mm }}%; background:{{ cor }}"></div>
+              </div>
+              <div class="sensor-reading">{{ sensor.chuva_mm }}mm</div>
+              <div class="sensor-badge {{ badge }}">{{ label }}</div>
+            </div>
+            {% endwith %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Alertas recentes</span>
+          <span class="panel-badge badge-danger">ao vivo</span>
+        </div>
+
+        {% for alerta in alertas_feed %}
+        <div class="alerta-card alerta-{{ alerta.nivel }}">
+          <div class="alerta-top">
+            <div class="alerta-bairro">
+              {% if alerta.nivel == "critico" %}⚠{% else %}~{% endif %}
+              {{ alerta.bairro }}
+            </div>
+            <div class="alerta-hora">{{ alerta.hora }}</div>
+          </div>
+          <div class="alerta-msg">{{ alerta.msg }}</div>
+          <div class="alerta-nivel-bar">
+            <div class="alerta-nivel-fill nivel-{{ alerta.nivel }}"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div class="footer-left">Rainwatch v1.0 · Django · Dados simulados · Período chuvoso Recife/PE</div>
+    </div>
+
+  </main>
+
+  <script>
+    function atualizarRelogio() {
+      const agora = new Date();
+      document.getElementById("relogio").textContent = agora.toLocaleTimeString("pt-BR");
+    }
+    atualizarRelogio();
+    setInterval(atualizarRelogio, 1000);
+  </script>
+  <script src="{% static 'sensores/js/dashboard.js' %}"></script>
+</body>
+</html>
