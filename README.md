@@ -24,9 +24,9 @@ O sistema centraliza informações de sensores, alertas automáticos e localiza�
 * WhiteNoise
 * Django Authentication System
 
-Funcionalidades Implementadas
-
-Escopo Implementado: Base
+ Escopo Implementado: Base
+ 
+ Funcionalidades Implementadas
 
 -Monitoramento de Sensores
 
