@@ -26,7 +26,7 @@ O sistema centraliza informações de sensores, alertas automáticos e localiza�
 
 Funcionalidades Implementadas
 
-Escopo Implementado: Avançado
+Escopo Implementado: Base
 
 -Monitoramento de Sensores
 
