@@ -124,17 +124,30 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-6. Executar migrações
+6. Instalar o dj_database_url
+
+pip install dj_database_url
+
+7. Criar os arquivos de migração
+
+python manage.py makemigrations
+
+8. Executar migrações
 
 python manage.py migrate
 
-7. Iniciar servidor
+9. Instalar o whitenoise
+
+pip install whitenoise
+
+10. Iniciar servidor
 
 python manage.py runserver
 
-8. Acessar no navegador
+11. Acessar no navegador
 
-http://127.0.0.1:8000/sensores/dashboard/
+https://rain-watch-nine.vercel.app/sensores/dashboard/
+>>>>>>> bf6ba71 (Fix: Injeção do dynatrace nos arquivos html e alteração no README)
 
 >Usuários de Teste
 

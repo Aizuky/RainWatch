@@ -7,7 +7,8 @@ django.setup()
 from sensores.models import Sensor
 from abrigos.models import Abrigo
 
-# ─── Limpa os dados antigos ───
+# Limpa os dados antigos
+
 Sensor.objects.all().delete()
 Abrigo.objects.all().delete()
 
@@ -32,7 +33,8 @@ for s in sensores:
 
 print(f"✅ {Sensor.objects.count()} sensores criados")
 
-# ─── Popula abrigos ───
+# Popula abrigos
+
 abrigos = [
     {"nome": "Escola Municipal Aníbal Fernandes",    "endereco": "R. Padre Inglês, 259 — Boa Vista",        "tipo": "Escola",   "bairro": "Boa Vista",     "capacidade": 200},
     {"nome": "Ginásio Geraldão",                     "endereco": "R. da Soledade, s/n — Cordeiro",          "tipo": "Ginásio",  "bairro": "Cordeiro",      "capacidade": 800},
