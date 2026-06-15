@@ -11,3 +11,5 @@ python popular_banco.py
 
 # Coleta os arquivos estáticos
 python manage.py collectstatic --noinput
+
+python create_admin.py
